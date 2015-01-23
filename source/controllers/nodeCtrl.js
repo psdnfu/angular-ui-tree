@@ -23,6 +23,8 @@
         $scope.expandOnHover = false;
 
         $scope.selected = false;
+        
+        $scope.checked = 0;
 
         $scope.init = function(controllersArr) {
           var treeNodesCtrl = controllersArr[0];
@@ -38,6 +40,73 @@
           $element.on('$destroy', function() {
             treeNodesCtrl.scope.destroySubNode($scope); // destroy sub nodes
           });
+        };
+        
+        var checkChild = function(scopeNodes, checked){
+          if(!scopeNodes){
+            scopeNodes = [];
+          }
+
+          scopeNodes.forEach(function(scopeNode){
+            scopeNode.checked = checked;
+            checkChild(scopeNode.childNodes(),checked);
+          });
+        };
+
+        var checkParent = function(scopeNode){
+          if(!scopeNode){
+            return;
+          }
+
+          var allChecked = true;
+          var partChacked = false;
+
+          scopeNode.childNodes().forEach(function(node){
+            if(node.checked === 1){
+              partChacked = partChacked || true;
+              allChecked = allChecked && true;
+            }else if(node.checked === 0){
+              partChacked = partChacked || false;
+              allChecked = false;
+            }else {
+              partChacked = partChacked || true;
+              allChecked = false;
+            }
+          });
+
+          if(allChecked){
+            scopeNode.checked = 1;
+          }else if(partChacked){
+            scopeNode.checked = -1;
+          }else{
+            scopeNode.checked = 0;
+          }
+
+          checkParent(scopeNode.$parentNodeScope);
+        };
+
+        $scope.toggleCheck = function(){
+          if($scope.checked === 1){
+            $scope.uncheck();
+          }else if($scope.checked === 0){
+            $scope.check();
+          }else{
+            $scope.uncheck();
+          }
+        };
+
+        $scope.check = function(){
+          $scope.checked = 1;
+          
+          checkChild($scope.childNodes() , $scope.checked);
+          checkParent($scope.$parentNodeScope);
+        };
+
+        $scope.uncheck = function(){
+          $scope.checked = 0;
+          
+          checkChild($scope.childNodes() , $scope.checked);
+          checkParent($scope.$parentNodeScope);
         };
 
         $scope.toggleSelected = function() {
