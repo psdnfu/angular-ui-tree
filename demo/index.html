@@ -133,6 +133,11 @@
                   <a class="btn btn-success btn-xs" nodrag ng-click="toggle(this)">
                     <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed }"></span>
                   </a>
+                  
+                  <a style="cursor: pointer;" nodrag ng-click="toggleCheck()">
+                      <span class="glyphicon" ng-class="{'glyphicon-check': checked == 1, 'glyphicon-unchecked': checked == 0, 'glyphicon-expand': checked == -1}"></span>
+                  </a
+                  
                   {{item.title}}
 
                   <a class="pull-right btn btn-danger btn-xs" nodrag ng-click="remove(this)">
